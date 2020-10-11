@@ -37,7 +37,11 @@ debug: distclean $(OBJECTS) $(COMMON)
 $(TARGET): CFLAGS += $(RELEASEFLAGS)
 $(TARGET): distclean $(OBJECTS) $(COMMON)
 	$(CC) $(FLAGS) $(CFLAGS) -o $(TARGET) $(OBJECTS) $(LDFLAGS)
-	strip --strip-all $(TARGET) || strip -Sx $(TARGET) # osx fallback
+ifeq ($(shell uname -s),Darwin)
+	strip -Sx $(TARGET)
+else
+	strip --strip-all $(TARGET)
+endif
 
 profile: CFLAGS += -pg
 profile: distclean $(TARGET)
